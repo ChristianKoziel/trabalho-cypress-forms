@@ -20,7 +20,7 @@ describe('Formulário de Cadastro', () => {
       cy.get('button[type="submit"]').click();
 
       // Simular a exibição de uma mensagem de sucesso
-      // Aqui, você pode verificar se há uma mensagem no HTML, como um alert ou algo que simule o sucesso
+      // verificar se há uma mensagem no HTML, como um alert ou algo que simule o sucesso
       cy.window().then((win) => {
           win.alert = cy.stub().as('alert'); // Simula um alerta
       });
