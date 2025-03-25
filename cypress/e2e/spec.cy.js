@@ -1,26 +1,42 @@
-describe('Formulário de Cadastro', () => {
-  it('Deve preencher e enviar o formulário com sucesso', () => {
-      cy.visit('http://localhost:5500');
+describe('Teste de Página de Comentários', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:8080'); 
+  });
 
-      cy.get('#nome').type('João Silva');
-      cy.get('#email').type('joao.silva@email.com');
-      cy.get('#telefone').type('1199999999');
-      cy.get('#senha').type('Teste@123');
-      cy.get('#confirma_senha').type('Teste@123');
+  it('Verifica elementos visíveis na página', () => {
+    cy.get('h1').should('be.visible').and('contain', 'Deixe seu comentário');
 
-      cy.get('#nome').should('have.value', 'João Silva');
-      cy.get('#email').should('have.value', 'joao.silva@email.com');
-      cy.get('#telefone').should('have.value', '1199999999');
-      cy.get('#senha').should('have.value', 'Teste@123');
-      cy.get('#confirma_senha').should('have.value', 'Teste@123');
+    cy.get('#submit-button').should('be.visible');
+   
+    cy.get('#comment-section').should('be.empty');
+  });
 
-      cy.get('button[type="submit"]').click();
+  it('Verifica textos na página', () => {
+    cy.get('#submit-button').should('have.text', 'Enviar Comentário');
+  });
 
-      cy.window().then((win) => {
-          win.alert = cy.stub().as('alert'); 
-      });
+  it('Verifica placeholders dos campos', () => {
+    cy.get('#nome').should('have.attr', 'placeholder', 'Digite seu nome');
+    
+    cy.get('#comentario').should('have.attr', 'placeholder', 'Escreva seu comentário aqui...');
+  });
 
-      cy.get('button[type="submit"]').click();
-      cy.get('@alert').should('have.been.calledWith', 'Cadastro realizado com sucesso!');
+  it('Manipula estados assíncronos e verifica comportamento', () => {
+    const nome = 'Usuário de Teste';
+    const comentario = 'Este é um comentário de teste automatizado.';
+    
+    cy.get('#nome').type(nome);
+    cy.get('#comentario').type(comentario);
+    
+    cy.get('#submit-button').click();
+    
+    cy.get('#loading')
+      .should('be.visible')
+      .and('contain', 'Enviando...');
+
+    cy.get('#loading', { timeout: 3000 }).should('not.be.visible');
+    cy.get('#comment-section p')
+      .should('have.length', 1)
+      .and('contain', `${nome}: ${comentario}`);
   });
 });
