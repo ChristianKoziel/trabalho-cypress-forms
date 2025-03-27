@@ -1,6 +1,6 @@
 describe('Teste de Página de Comentários', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080'); 
+    cy.visit('http://localhost:5500'); 
   });
 
   it('Verifica elementos visíveis na página', () => {
